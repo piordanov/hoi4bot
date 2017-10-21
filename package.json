@@ -1,0 +1,15 @@
+{
+  "name": "HOI4 Meme Machine",
+  "version": "1.0.0",
+  "description": "custom bot for HOI4",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "discord.io": "^2.5.3",
+    "winston": "^2.4.0"
+  }
+}
