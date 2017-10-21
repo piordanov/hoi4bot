@@ -1,4 +1,4 @@
-const Discord = require('discord.io');
+const Discord = require('discord.js');
 const logger = require('winston');
 const auth = require('./auth.json');
 // Configure logger settings
@@ -7,68 +7,23 @@ logger.add(logger.transports.Console, {
     colorize: true
 });
 logger.level = 'debug';
-// Initialize Discord Bot
-const bot = new Discord.Client({
-   token: auth.token,
-   autorun: true
-});
+//initialize bot
+const bot = new Discord.Client();
 
 
-bot.on('ready', (evt) => {
+bot.on('ready', () => {
     logger.info('Connected');
     logger.info('Logged in as: ');
     logger.info(bot.username + ' - (' + bot.id + ')');
 });
 
-bot.on('message', (message) =>{
-    // Our bot needs to know if it will execute a command
-    // It will listen for messages that will start with `!`
+
+bot.on('message', (message) => {
+    if (message.content.startsWith("!ping")) {
+        message.channel.send("pong!");
+    }
     console.log(Object.getOwnPropertyNames(message));
-    if (message.substring(0, 1) == '!') {
-        var args = message.substring(1).split(' ');
-        var cmd = args[0];
-       
-        args = args.splice(1);
-        switch(cmd) {
-            // !ping
-            case 'ping':
-                bot.sendMessage({
-                    to: channelID,
-                    message: 'Pong!'
-                });
-                break;
 
-            case 'memeplz':
-                bot.sendMessage({
-                    to: channelID,
-                    message: "@" + user + " only the freshest!"
-                });
-                // bot.sendFile(message, '"http://www.reddit.com/r/pics.json?jsonp=?",', 'kappa.jpg', 'Check out this cool file!', (err, m) => {
-                //         if (err) console.log(err);
-                // });
-                break;
-
-            case 'nyet':
-                bot.sendMessage({
-                    to: channelID,
-                    message: "NYET"
-                });
-
-                break;
-            // Just add any case commands if you want to..
-         }
-     }
 });
-//     // Create an event listener for new guild members
-// bot.on('guildMemberAdd', member => {
-//   // Send the message to the guilds default channel (usually #general), mentioning the member
-//   member.guild.defaultChannel.send(`Welcome to the server, ${member}!`);
 
-//   // If you want to send the message to a designated channel on a server instead
-//   // you can do the following:
-//   const channel = member.guild.channels.find('name', 'member-log');
-//   // Do nothing if the channel wasn't found on this server
-//   if (!channel) return;
-//   // Send the message, mentioning the member
-//   channel.send(`Welcome to the server, ${member}`);
-// });
+bot.login(auth.token);
