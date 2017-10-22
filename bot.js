@@ -13,16 +13,22 @@ const bot = new Discord.Client();
 
 bot.on('ready', () => {
     logger.info('Connected');
-    logger.info('Logged in as: ');
-    logger.info(bot.username + ' - (' + bot.id + ')');
 });
 
 
+const prefix = '!';
 bot.on('message', (message) => {
-    if (message.content.startsWith("!ping")) {
+    
+    if (message.content.startsWith(prefix + "ping")) {
+        console.log(message.author.id);
         message.channel.send("pong!");
     }
-    console.log(Object.getOwnPropertyNames(message));
+    else if(message.content.startsWith(prefix + "nyet")) {
+        message.channel.send("", {
+            file: new FileOptions("")
+        });
+    }
+    
 
 });
 
