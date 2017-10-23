@@ -1,6 +1,6 @@
 {
-  "name": "HOI4 Meme Machine",
-  "version": "1.0.0",
+  "name": "hoiserverbot",
+  "version": "1.0.2",
   "description": "custom bot for HOI4",
   "main": "bot.js",
   "scripts": {
