@@ -1,5 +1,9 @@
 {
-    "ping": "Replies pong",
-    "set": "sets a reminder for the bot to send a txt at certain time on the week",
-    "remove": "remove reminder with given name"
+    "help": "Use this command to learn about the other commands",
+    "ping": "replies pong",
+    "pong": "replies ping",
+    "set": "sets a reminder for the bot to send a txt at certain time on the week\n set <datestring> <txt>",
+    "remove": "remove reminder with given name\n remove <name>",
+    "splurt": "repeat a named emoji n times\n splurt <emoji> <n>",
+    "listemojis": "list all custom emojis"
 }

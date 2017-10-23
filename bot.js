@@ -1,8 +1,10 @@
 const Discord = require('discord.js');
 const logger = require('winston');
-const auth = require('./auth.json');
+const schedule = require('node-schedule');
 
+const auth = require('./auth.json');
 const config = require('./config.json');
+const help = require('./help.json');
 // Configure logger settings
 logger.remove(logger.transports.Console);
 logger.add(logger.transports.Console, {
@@ -11,7 +13,7 @@ logger.add(logger.transports.Console, {
 logger.level = 'debug';
 //initialize bot
 const bot = new Discord.Client();
-let reminders = {};
+let reminders = [];
 
 bot.on('ready', () => {
     logger.info('Connected');
@@ -34,6 +36,11 @@ bot.on('message', (message) => {
         message.channel.send("pong!");
     }
 
+    else if (command === "pong") {
+        logger.info(message.author.id + " sent ping");
+        message.channel.send("ping!");
+    }
+
     else if (command === "splurt"){
         const [name, n] = args;
         const emoji = bot.emojis.find("name", name);
@@ -54,6 +61,7 @@ bot.on('message', (message) => {
         }
 
     }
+
     else if (command === "listemojis") {
         const emojiList = message.guild.emojis.map(e=>e.toString()).join(" ");
         if (emojiList.length > 0) {
@@ -64,18 +72,33 @@ bot.on('message', (message) => {
         }
     }
 
+    else if (command === "help") {
+        let [arg] = args;
+        if (arg === undefined) {
+            arg = command;
+        }
+        let response = "";
+        if (arg === command) {
+            Object.keys(help).forEach((key) => {
+                response += `${key}: ${help[key]}\n`;
+            });
+        }
+        else {
+            response = `${arg}: ${help[arg]}`;
+        }
+        message.reply(`\n${response}`);
+    }
+
     else if (command === "set") {
-        let [time, weekday, ...txt] = args;
+        let [month, day, year, time, ...txt] = args;
         let id = reminders.length + 1;
         logger.info("Setting Reminder" );
+        let date = new Date([[ month, day, year, time].join(" ")]);
+        reminders[id] = schedule.scheduleJob(date, () => {
+            message.channel.send(`${message.channel}: ${txt} `);
+        });
 
-        let date = new Date()
-        reminders[id] = {
-            'datetime': date,
-            'text': txt
-        }
-
-        message.reply(`Setting reminder for ${weekday} at ${time} with text ${txt}. Cheers!`);
+        message.reply(`Setting reminder for ${date} with text ${txt}. Cheers!`);
 
 
     }
