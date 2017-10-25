@@ -13,7 +13,7 @@ logger.add(logger.transports.Console, {
 logger.level = 'debug';
 //initialize bot
 const bot = new Discord.Client();
-let reminders = [];
+let reminders = {};
 
 bot.on('ready', () => {
     logger.info('Connected');
@@ -91,22 +91,32 @@ bot.on('message', (message) => {
 
     else if (command === "set") {
         let [month, day, year, time, ...txt] = args;
-        let id = reminders.length + 1;
+        let id = new String("Reminder:" + reminders.length);
+
         logger.info("Setting Reminder" );
         let date = new Date([[ month, day, year, time].join(" ")]);
-        reminders[id] = schedule.scheduleJob(date, () => {
+        reminders[id] = {
+            'date': date,
+            'txt': txt
+        };
+        schedule.scheduleJob(id, date, () => {
             message.channel.send(`${message.channel}: ${txt} `);
         });
 
-        message.reply(`Setting reminder for ${date} with text ${txt}. Cheers!`);
+        message.reply(`Set reminder ${id} for ${date}. Cheers!`);
 
 
     }
 
     else if (command === "remove") {
-        let [name] = args;
+        let [id] = args;
+        logger.info(reminders);
         logger.info("Destroying Reminder");
-        message.reply(`Removing reminder ${name} `);
+        logger.info(schedule.scheduledJobs);
+        schedule.scheduledJobs[id].cancel();
+        reminders[id] = null;
+        console.log(reminders.length);
+        message.reply(`Removed reminder ${id} `);
     }
 
     
